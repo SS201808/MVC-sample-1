@@ -1,0 +1,112 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@ViewBag.Title</title>
+    @Scripts.Render("~/bundles/lib")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/css")
+    @using Microsoft.AspNet.Identity
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#detail").hide();
+
+            $('#searchButton').on('click', function () {
+                $.ajax({
+                    url: '@Url.Content("~/api/controller/")' +"?querystring=" + $("#controlelement").val(),
+                    success: function (result) {
+
+                        if (result) {
+                            $("#detail").show();
+                            $(".errorMessage").text("");
+                        
+                        
+                            if (result.CustomeName.length > 5)
+                            {
+                                $(".customer").text(result.CustomeName.substr(0, 5));
+                            }
+                            else
+                                $(".customer").text(result.CustomeName);
+                            $(".country").text(result.Country);
+                         
+                        } else {
+                            $("#detail").hide();
+                            $(".errorMessage").text("No Record Found!");
+                        }
+
+                    }
+                });
+            });
+
+            $('#clearButton').on('click', function () {
+
+                $("#detail").hide();
+                $(".errorMessage").text("");
+       
+                $(".customer").text('');
+                $(".country").text('');           
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div>
+                   
+                </div>
+            </div>
+            <div class="navbar-collapse collapse">
+                @if (Request.IsAuthenticated)
+            {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <span class="hidden-xs" style="font-size: smaller; float:left; margin-top: 2em; margin-left: 9em"><i class="fa fa-user"></i> WELCOME, <b class="employeeName">@Session["name"]</b></span>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid body-content">
+        <div class="panel panel-default" style="padding-left:1px; padding-right:1px">
+            <div class="col-md-12 panel-body">
+                <div class="col-sm-12 form-group">
+                 
+
+                    <div id="detail" class="row">
+                        
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-2">
+                                <label class="control-label">Customer Name</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="customer text-primary"></p>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="control-label">Country</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="country text-primary"></p>
+                            </div>
+                        </div>                                      
+                    </div>
+                    <div class="col-sm-12 form-group">
+                        <p class="errorMessage" style="color:red"></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
